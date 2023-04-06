@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 import com.example.Todo.model.TodoEntity;
 import com.example.Todo.persistence.TodoRepository;
@@ -18,17 +19,18 @@ public class TodoService {
 	@Autowired
 	private TodoRepository repository;
 	
-	public Optional<TodoEntity>create(final TodoEntity entity) {
+	public List<TodoEntity> create(final TodoEntity entity) {
 		validate(entity);
 		repository.save(entity);
-		return repository.findById(entity.getId());
+		
+		return repository.findByUserId(entity.getUserId());
 	}
 	
-	public List<TodoEntity>retrieve(final String userId) {
+	public List<TodoEntity> retrieve(final String userId) {
 		return repository.findByUserId(userId);
 	}
 	
-	public Optional<TodoEntity>update(final TodoEntity entity) {
+	public List<TodoEntity> update(final TodoEntity entity) {
 		validate(entity);
 		if(repository.existsById(entity.getId())) {
 			repository.save(entity);
@@ -37,32 +39,56 @@ public class TodoService {
 			throw new RuntimeException("Unknown id");
 		}
 		
-		return repository.findById(entity.getId());
+		return repository.findByUserId(entity.getUserId());
 	}
 	
-	public Optional<TodoEntity>updateTodo(final TodoEntity entity) {
-		validate(entity);
+	public List<TodoEntity> delete(final TodoEntity entity) {
+		if(repository.existsById(entity.getId())) {
+			repository.deleteById(entity.getId());
+		}
+		else {
+			throw new RuntimeException("id does not exist");
+		}
 		
-		final Optional<TodoEntity> original = repository.findById(entity.getId());
-		
-		original.ifPresent(todo -> {
-			todo.setTitle(entity.getTitle());
-			todo.setDone(entity.isDone());
-			repository.save(todo);
-		});
-		
-		return repository.findById(entity.getId());
+		return repository.findByUserId(entity.getUserId());
 	}
 	
 	public void validate(final TodoEntity entity) {
 		if(entity == null) {
-			log.warn("Entity cannot be null.");
+			log.warn("Entity cannot be null");
 			throw new RuntimeException("Entity cannot be null");
 		}
 		
 		if(entity.getUserId() == null) {
-			log.warn("Unknown user.");
+			log.warn("Unknown user");
 			throw new RuntimeException("Unknown user");
 		}
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }
