@@ -25,7 +25,6 @@ import com.example.Todo.service.TodoService;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("todo")
 public class TodoController {

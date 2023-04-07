@@ -16,7 +16,6 @@ import com.example.Todo.service.UserService;
 
 import lombok.extern.slf4j.Slf4j;
 
-@CrossOrigin(origins = "*")
 @Slf4j
 @RestController
 @RequestMapping("/auth")
